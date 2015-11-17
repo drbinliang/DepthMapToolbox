@@ -1,10 +1,6 @@
 Depth Map Toolbox 
 ===================
-- Version: 1.1 (17/11/2015)
-- New modules are added: 
-  - depth motion history image calculation
-
-- Version: 1.0 (10/11/2015)
+- Version 1.1 (2015-11-17)
 - This toolbox is designed for processing of depth maps, including 
   - depth map loading
   - depth map visualization
@@ -12,6 +8,7 @@ Depth Map Toolbox
   - point clouds visualization
   - point clouds rotation
   - conversion of point clouds to projection image
+  - depth motion history image calculation
 
 
 GENERAL USAGE NOTES
