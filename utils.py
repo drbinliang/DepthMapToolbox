@@ -74,3 +74,18 @@ def findBoxRegion(image):
         
     boxRegion = [top, bottom, left, right]
     return boxRegion
+
+
+def split_list(alist, wanted_parts = 1):
+    """ 
+        FUNC: split list into segments with same length 
+        PARAM:
+            alist: list to be split
+            wanted_parts: the number of segments to be split equally
+        RETURN:
+            a list of segments with the same length
+            
+    """
+    length = len(alist)
+    return [ alist[i*length // wanted_parts: (i+1)*length // wanted_parts] 
+             for i in range(wanted_parts) ]
