@@ -8,9 +8,13 @@ from depth_utils import loadDepthFile, showDepthData, getWorldCoordinates,\
     getDepthProjections
     
 import math
+from seq_representation.motion_history_rep import calDepthMHI
+import cv2
 
-# Example of how to use   
-if __name__ == '__main__':
+def run_depth_utils_example():
+    """
+        FUNC: examples of basic usage of depth utils
+    """
 #     # load binary depth file
 #     depthFile = './depth_data/a01_s01_e01_sdepth.bin'
 #     depthSequence = loadDepthFile(depthFile, fType = 'bin')
@@ -40,3 +44,26 @@ if __name__ == '__main__':
         
         projImg = getDepthProjections(r_points)
         showDepthData(projImg)
+
+
+def run_seq_representation():
+    """
+        FUNC: examples of usage of sequence representation
+    """
+    # load binary depth file
+    depthFile = './depth_data/a01_s01_e01_sdepth.bin'
+    depthSequence = loadDepthFile(depthFile, fType = 'bin')
+    dmhiImg = calDepthMHI(depthSequence)
+    
+    cv2.imshow('depth MHT', dmhiImg), cv2.waitKey()
+
+
+# Example of usage   
+if __name__ == '__main__':
+#     run_type = 'depth_utils'
+    run_type = 'seq_representation'
+    
+    if run_type == 'depth_utils':
+        run_depth_utils_example()
+    elif run_type == 'seq_representation':
+        run_seq_representation()
