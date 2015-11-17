@@ -8,7 +8,15 @@ import cv2
 from utils import mat2gray, split_list
 
 def depthFrameDiff(currImg, preImg, motion_thresh):
-    ''' frame difference '''
+    ''' 
+        FUNC: calculate motion regions given two frames
+        PARAM:
+            currImg: current image
+            preImg: previous image
+            motion_thresh: threshold for detection of motion region
+        RETURN:
+            motionImg: motion image which encodes the motion regions 
+    '''
     diff = cv2.absdiff(currImg, preImg).astype(np.int32)
     motionImg = diff.copy()
     motionImg[np.where(diff >= motion_thresh)] = 1
@@ -18,7 +26,15 @@ def depthFrameDiff(currImg, preImg, motion_thresh):
 
 
 def calDepthMHI(frames, motion_thresh = 10, stride = 1):
-    """ calculate DMHI from given frames """
+    """ 
+        FUNC: Calculate DMHI from given sequence (a list of frames)
+        PARAM:
+            frames: a list of frames
+            motion_thresh: threshold for detection of motion region
+            stride: stride of calculation of difference between frames
+        RETURN:
+            dmhi: depth motion history image
+    """
     
     duration = len(frames)
     firstFrm = frames[0]
@@ -66,10 +82,10 @@ def calDepthMHI(frames, motion_thresh = 10, stride = 1):
     finalDMHI = D_MHIs[-1]
     
     # convert to image
-    dmhiImg = mat2gray(finalDMHI)
-    dmhiImg = cv2.GaussianBlur(dmhiImg, (3, 3), 0)    # Gaussian blur
+    dmhi = mat2gray(finalDMHI)
+    dmhi = cv2.GaussianBlur(dmhi, (3, 3), 0)    # Gaussian blur
     
-    return dmhiImg
+    return dmhi
 
 
 # def calWinDepthMHIList(frames, winSize, winStep):

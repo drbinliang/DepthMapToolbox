@@ -53,9 +53,9 @@ def run_seq_representation():
     # load binary depth file
     depthFile = './depth_data/a01_s01_e01_sdepth.bin'
     depthSequence = loadDepthFile(depthFile, fType = 'bin')
-    dmhiImg = calDepthMHI(depthSequence)
+    dmhi = calDepthMHI(depthSequence)
     
-    cv2.imshow('depth MHT', dmhiImg), cv2.waitKey()
+    cv2.imshow('depth MHT', dmhi), cv2.waitKey()
 
 
 # Example of usage   
