@@ -3,7 +3,7 @@ Created on 10 Nov 2015
 
 @author: bliang03
 '''
-from depth_utils import loadDepthFile, showDepthData, getWorldCoordinates,\
+from depth_proc.depth_utils import loadDepthFile, showDepthData, getWorldCoordinates,\
     visualizePointCloud, getFrontDepthProjections, rotatePoints,\
     getDepthProjection
     
@@ -65,7 +65,7 @@ def run_seq_rep_example():
         
     # any projections of frames in a sequence
     r_alpha = 0.
-    r_beta = math.pi / 4.
+    r_beta = math.pi / 3.
     rProjSeq = rotateDepthSequence(depthSequence, r_alpha, r_beta)
     r_dmhi = calDepthMHI(rProjSeq)
     cv2.imshow('rotate projections', r_dmhi), cv2.waitKey()

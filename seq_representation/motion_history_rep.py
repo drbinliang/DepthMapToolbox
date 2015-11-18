@@ -6,7 +6,7 @@ Created on 23 Sep 2014
 import numpy as np
 import cv2
 from utils import mat2gray, split_list, findBoxRegion
-from depth_utils import getWorldCoordinates, rotatePoints, getDepthProjection
+from depth_proc.depth_utils import getWorldCoordinates, rotatePoints, getDepthProjection
 import math
 
 def depthFrameDiff(currImg, preImg, motion_thresh):

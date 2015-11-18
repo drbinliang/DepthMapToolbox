@@ -8,7 +8,7 @@ import struct
 import numpy as np
 import cv2
 from utils import mat2gray, findBoxRegion
-from point_cloud import VtkPointCloud
+from depth_proc.point_cloud import VtkPointCloud
 import math
 
 def loadDepthFile(depthFile, fType = 'bin'):
