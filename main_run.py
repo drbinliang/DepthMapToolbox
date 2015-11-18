@@ -11,6 +11,7 @@ import math
 from seq_representation.motion_history_rep import calDepthMHI,\
     rotateDepthSequence, calDepthMHT
 import cv2
+from feat.feat_extract import extractPHOGFeature
 
 def run_depth_utils_example():
     """
@@ -70,13 +71,27 @@ def run_seq_rep_example():
     r_dmhi = calDepthMHI(rProjSeq)
     cv2.imshow('rotate projections', r_dmhi), cv2.waitKey()
 
+def run_feat_ext_example():
+    """
+        FUNC: examples of usage of feature extraction
+    """
+    # load binary depth file
+    depthFile = './depth_data/a01_s01_e01_sdepth.bin'
+    depthSequence = loadDepthFile(depthFile, fType = 'bin')
+    
+    dmhi = calDepthMHI(depthSequence)
+    resizedDmhi = cv2.resize(dmhi, (128, 128))
+    phog_vec = extractPHOGFeature(resizedDmhi)
 
 # Example of usage   
 if __name__ == '__main__':
 #     run_type = 'depth_utils'
-    run_type = 'seq_representation'
+#     run_type = 'seq_representation'
+    run_type = 'feat_extract'
     
     if run_type == 'depth_utils':
         run_depth_utils_example()
     elif run_type == 'seq_representation':
         run_seq_rep_example()
+    elif run_type == 'feat_extract':
+        run_feat_ext_example()

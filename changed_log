@@ -1,12 +1,16 @@
+- Version 1.2.0 (2015-11-18)
+- modules add: 
+  - pyramid histogram of oriented gradients calculation
+  
 - Version 1.1.1 (2015-11-18)
 - modules add: 
   - depth motion history template calculation
 
-- Version 1.1 (2015-11-17)
+- Version 1.1.0 (2015-11-17)
 - modules add: 
   - depth motion history image calculation
 
-- Version 1.0 (2015-11-07)
+- Version 1.0.0 (2015-11-07)
 - modules add:  
   - depth map loading
   - depth map visualization
