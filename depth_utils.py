@@ -151,53 +151,71 @@ def getFrontDepthProjections(points, projSize):
     n_points, _ = points.shape
     
     # projImg initialization
-    projImg = np.zeros((height, width))    
+    projData = np.zeros((height, width))    
     for n in xrange(n_points):
         xw, yw, zw = points[n, :]
         if zw != 0:
             colIdx = math.floor((xw * fx) / zw + cx)
             rowIdx = math.floor((yw * fy) / zw + cy)
-            projImg[rowIdx, colIdx] = zw
+            projData[rowIdx, colIdx] = zw
             if colIdx < 0 or rowIdx < 0:
                 print 'WARNING: index is out of range when doing projection '
     
-    return projImg
+    return projData
 
 
-def getDepthProjections(points):
+def getDepthProjection(points, isCrop = True):
     """
         FUNC: get projections by counting the number of 3D points
         
         PARAM:
             points: point clouds
+            crop: crop the ROI or not
             
         RETURN:
-            projImg: the image of projection
+            resultProjImg: the projection image (range: 0-255)
     """
     tmp_points = points.copy()
     min_xw = np.min(tmp_points[:,0])
     min_yw = np.min(tmp_points[:,1])
-    
+     
     tmp_points[:,0] -= min_xw
     tmp_points[:,1] -= min_yw
-    
-    width = math.ceil(np.max(tmp_points[:,0])) + 1
-    height = math.ceil(np.max(tmp_points[:,1])) + 1
-    
+     
+#     width = math.ceil(np.max(tmp_points[:,0])) + 1
+#     height = math.ceil(np.max(tmp_points[:,1])) + 1
+
+    width = 800
+    height = 800
+     
     n_points, _ = tmp_points.shape
-    
-    projImg = np.zeros((height, width))
+     
+    projData = np.zeros((height, width))
     for n in xrange(n_points):
         [xw, yw, zw] = tmp_points[n, :]
         if zw != 0:
             rowIdx = math.floor(yw)
             colIdx = math.floor(xw)
-            projImg[rowIdx, colIdx] += 1
+            projData[rowIdx, colIdx] += 1
+     
+    projImg = mat2gray(projData)  # scale to 0-255
     
-    boxRegion = findBoxRegion(projImg)
-    top, bottom, left, right = boxRegion
-    cropProjImg = projImg[top:bottom, left:right]
-    return cropProjImg
+    # post processing
+    # closing (Dilation followed by Erosion)
+    kernel = np.ones((3, 3), np.uint8)
+    projImg1 = cv2.morphologyEx(projImg, cv2.MORPH_CLOSE, kernel)
+    projImg2 = cv2.equalizeHist(projImg1)
+    
+    if isCrop:
+        boxRegion = findBoxRegion(projImg2)
+        top, bottom, left, right = boxRegion
+        resultProjImg = projImg2[top:bottom, left:right]
+    else:
+        resultProjImg = projImg2.copy()
+        
+    return resultProjImg
+    
+
 
 def visualizePointCloud(points):
     """ 
@@ -223,7 +241,7 @@ def visualizePointCloud(points):
     pointCloud.visualize()
 
 
-def showDepthData(depthData, colorMap = True):
+def showDepthData(depthData, isColorMap = True):
     """
         FUNC: show depth data
         
@@ -235,7 +253,7 @@ def showDepthData(depthData, colorMap = True):
     """
     depthImage = mat2gray(depthData)
     
-    if colorMap:
+    if isColorMap:
         depthImage = cv2.applyColorMap(depthImage, cv2.COLORMAP_JET)
     
     cv2.imshow('', depthImage)

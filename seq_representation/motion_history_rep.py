@@ -5,7 +5,9 @@ Created on 23 Sep 2014
 '''
 import numpy as np
 import cv2
-from utils import mat2gray, split_list
+from utils import mat2gray, split_list, findBoxRegion
+from depth_utils import getWorldCoordinates, rotatePoints, getDepthProjection
+import math
 
 def depthFrameDiff(currImg, preImg, motion_thresh):
     ''' 
@@ -25,13 +27,14 @@ def depthFrameDiff(currImg, preImg, motion_thresh):
     return motionImg
 
 
-def calDepthMHI(frames, motion_thresh = 10, stride = 1):
+def calDepthMHI(frames, motion_thresh = 10, stride = 1, isCrop = True):
     """ 
         FUNC: Calculate DMHI from given sequence (a list of frames)
         PARAM:
             frames: a list of frames
             motion_thresh: threshold for detection of motion region
             stride: stride of calculation of difference between frames
+            isCrop: crop ROI or not
         RETURN:
             dmhi: depth motion history image
     """
@@ -85,7 +88,70 @@ def calDepthMHI(frames, motion_thresh = 10, stride = 1):
     dmhi = mat2gray(finalDMHI)
     dmhi = cv2.GaussianBlur(dmhi, (3, 3), 0)    # Gaussian blur
     
-    return dmhi
+    # crop or not
+    if isCrop:
+        boxRegion = findBoxRegion(dmhi)
+        top, bottom, left, right = boxRegion
+        resultDmhi = dmhi[top:bottom, left:right]
+    else:
+        resultDmhi = dmhi.copy()
+    
+    return resultDmhi
+
+
+
+def calDepthMHT(frames, motion_threshs = [10, 10, 10]):
+    """
+        FUNC: Calculate DMHT from given sequence (a list of depth frames)
+        PARAM:
+            frames: a list of depth frames
+            motion_thresh: a list of thresholds for detection of motion region
+        RETURN:
+            dmht: a list of dmhi (front, top and side) 
+    """
+    dmht = []
+    
+    # front view
+    dmhi = calDepthMHI(frames, motion_thresh = motion_threshs[0])
+    dmht.append(dmhi)
+    
+    # top view
+    r_alpha = math.pi / 2.  # angle around x
+    r_beta = 0. # angle around y
+    # top projections of frames in a sequence
+    topProjSeq = rotateDepthSequence(frames, r_alpha, r_beta)
+    top_dmhi = calDepthMHI(topProjSeq, motion_thresh = motion_threshs[2])
+    dmht.append(top_dmhi)
+    
+    # side view
+    r_alpha = 0.    # angle around x
+    r_beta = math.pi / 2.   # angle around y
+    # side projections of frames in a sequence
+    sideProjSeq = rotateDepthSequence(frames, r_alpha, r_beta)
+    side_dmhi = calDepthMHI(sideProjSeq, motion_thresh = motion_threshs[1])
+    dmht.append(side_dmhi)
+    
+    return dmht
+
+
+def rotateDepthSequence(frames, r_alpha, r_beta):
+    """
+        FUNC: rotate depth frames in a sequence
+        PARAM:
+            frames: a list of frames
+            r_alpha: angle around y-axis
+            r_beta: angle around x-axis
+        RETURN:
+            r_frames: a list of rotated frames
+    """
+    r_frames = []
+    for depthData in frames:
+        points = getWorldCoordinates(depthData)
+        r_points = rotatePoints(points, r_alpha, r_beta)
+        projData = getDepthProjection(r_points, isCrop=False)
+        r_frames.append(projData)
+    
+    return r_frames
 
 
 # def calWinDepthMHIList(frames, winSize, winStep):
