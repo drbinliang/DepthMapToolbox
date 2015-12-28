@@ -58,8 +58,8 @@ class VtkPointCloud:
         
         #add the actors to the scene
         renderer.AddActor(self.vtkActor)
-#         renderer.SetBackground(255, 255, 255) # Background white
-        renderer.SetBackground(0, 0, 0)
+        renderer.SetBackground(255, 255, 255) # Background white
+#         renderer.SetBackground(0, 0, 0)
           
         transform = vtk.vtkTransform()
         transform.Translate(0, 0, 0)

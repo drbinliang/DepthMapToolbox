@@ -305,16 +305,17 @@ def rotatePoints(points, r_alpha, r_beta):
         
     # Our method
     ry = np.identity(4)
-    ry[1,1] = math.cos(r_alpha)
-    ry[1,2] = -math.sin(r_alpha)
-    ry[2,1] = math.sin(r_alpha)
-    ry[2,2] = math.cos(r_alpha)
+    ry[0, 0] = math.cos(r_alpha)
+    ry[0, 2] = math.sin(r_alpha)
+    ry[2, 0] = -math.sin(r_alpha)
+    ry[2, 2] = math.cos(r_alpha)
+    
      
     rx = np.identity(4)
-    rx[0, 0] = math.cos(r_beta)
-    rx[0, 2] = math.sin(r_beta)
-    rx[2, 0] = -math.sin(r_beta)
-    rx[2, 2] = math.cos(r_beta)
+    rx[1,1] = math.cos(r_beta)
+    rx[1,2] = -math.sin(r_beta)
+    rx[2,1] = math.sin(r_beta)
+    rx[2,2] = math.cos(r_beta)
     
     n_points, _ = points.shape 
     
